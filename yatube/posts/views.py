@@ -1,9 +1,10 @@
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, render
 
 
 # Функция обработки главной страницы
 def index(request):
-    return HttpResponse('Главная страница')
+    template = 'posts/index.html'
+    return render(request, template)
 
 
 # Функция обработки групп
