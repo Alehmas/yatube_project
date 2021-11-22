@@ -17,6 +17,7 @@ def group_posts(request, pk):
     context = {
         'title': title,
     }
+    print(pk)
     return render(request, template, context)
 
 """ Функция обработки групп
