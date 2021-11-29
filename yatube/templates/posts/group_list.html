@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block content %}
+  <h1>Лев Толстой – зеркало русской революции.</h1>
+  <p>{{ post.group }}</p>
   {% for post in posts %}
-    <p>Название группы: {{ post.group }}</p>
     <article>
       <ul>
         <li>
