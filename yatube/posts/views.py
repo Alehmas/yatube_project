@@ -10,9 +10,11 @@ def index(request):
     # отсортированных по полю pub_date по убыванию (от больших значений к меньшим)
     posts = Post.objects.order_by('-pub_date')[:10]
     template = 'posts/index.html'
+    title = 'Последние обновления на сайте'
     # В словаре context отправляем информацию в шаблон
     context = {
         'posts': posts,
+        'title': title,
     }
     return render(request, template, context)
 
@@ -24,6 +26,7 @@ def group_posts(request, slug):
     # поле slug у которых соответствует значению slug в запросе
     group = get_object_or_404(Group, slug=slug)
     template = 'posts/group_list.html'
+    title = f'Записи сообщества {group}'
     # Метод .filter позволяет ограничить поиск по критериям.
     # Это аналог добавления
     # условия WHERE group_id = {group_id}
@@ -31,6 +34,7 @@ def group_posts(request, slug):
     context = {
         'group': group,
         'posts': posts,
+        'title': title,
     }
     return render(request, template, context)
 
