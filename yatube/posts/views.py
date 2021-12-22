@@ -39,10 +39,10 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    user = get_object_or_404(User, username=username)
+    author = get_object_or_404(User, username=username)
     template = 'posts/profile.html'
-    title = f'Профайл пользователя {user.get_full_name()}'
-    post_list = Post.objects.filter(author=user).order_by('-pub_date')
+    title = f'Профайл пользователя {author.get_full_name()}'
+    post_list = Post.objects.filter(author=author).order_by('-pub_date')
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -51,7 +51,7 @@ def profile(request, username):
         'page_obj': page_obj,
         'title': title,
         'posts_count': posts_count,
-        'user': user,
+        'author': author,
     }
     return render(request, template, context)
 
