@@ -12,7 +12,7 @@
         </li>
         {% if post.group %}   
           <li class="list-group-item">
-            Группа: {{ group }}
+            Группа: {{ post.group.title }}
             <a href="{% url 'posts:group_list' post.group.slug %}">
               все записи группы
             </a>
@@ -33,6 +33,12 @@
     </aside>
     <article class="col-12 col-md-9">
       <p>{{ post.text }}</p>
+      <div class="d-flex justify-content-start">
+        <!-- эта кнопка видна только автору -->
+        <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">
+            Редактировать запись
+        </a>
+      </div>
     </article>
   </div> 
 {% endblock %}
