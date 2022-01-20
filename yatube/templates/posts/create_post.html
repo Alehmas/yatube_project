@@ -36,32 +36,33 @@
               {% endfor %}
           {% endif %}
 
-          <form method="post"
-            {% if action_url %}
-              action="{% url action_url %}"
-            {% endif %}
-          >
+          <form method="post">
           {% csrf_token %}
 
-            <div class="form-group row my-3 p-3">
-                <label for="id_text">
-                  Текст поста                  
-                <span class="required text-danger" >*</span>                  
+            {% for field in form %}
+              <div class="form-group row my-3"
+                {% if field.field.required %} 
+                  aria-required="true"
+                {% else %}
+                  aria-required="false"
+                {% endif %}
+              >
+                <label for="{{ field.id_for_label }}">
+                  {{ field.label }}
+                    {% if field.field.required %}
+                      <span class="required text-danger">*</span>
+                    {% endif %}
                 </label>
-                {{ form.text|addclass:'form-control' }}              
-                <small id="id_text-help" class="form-text text-muted">
-                  Текст нового поста
-                </small>                  
-            </div>            
-            <div class="form-group row my-3 p-3">
-                <label for="id_group">
-                Group                  
-                </label>
-                {{ form.group|addclass:'form-control' }}
-                <small id="id_group-help" class="form-text text-muted">
-                  Группа, к которой будет относиться пост
-                </small>
-            </div>
+                <div>
+                {{ field|addclass:'form-control' }}
+                  {% if field.help_text %}
+                    <small id="{{ field.id_for_label }}-help" class="form-text text-muted">
+                      {{ field.help_text|safe }}
+                    </small>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
             <div class="d-flex justify-content-end">
               <button type="submit" class="btn btn-primary">
                 {% if is_edit %}

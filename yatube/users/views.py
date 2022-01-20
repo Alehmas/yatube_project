@@ -8,5 +8,3 @@ class SignUp(CreateView):
     form_class = CreationForm
     template_name = 'users/signup.html'
     success_url = reverse_lazy('posts:index')
-
-# Create your views here.
