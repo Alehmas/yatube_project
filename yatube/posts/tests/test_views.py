@@ -1,12 +1,20 @@
+import shutil
+import tempfile
+
 from django import forms
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from posts.models import Group, Post
+
+TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.MEDIA_ROOT)
 
 User = get_user_model()
 
 
+@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostViewTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -22,11 +30,30 @@ class PostViewTests(TestCase):
             slug='test-slug2',
             description='Тестовое описание2',
         )
+        cls.image = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
+        )
+        cls.uploaded = SimpleUploadedFile(
+            name='small.gif',
+            content=cls.image,
+            content_type='image/gif',
+        )
         cls.post = Post.objects.create(
             author=cls.user,
             text='Тестовый пост',
             group=PostViewTests.group,
+            image=PostViewTests.uploaded,
         )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def setUp(self):
         self.authorized_client = Client()
@@ -66,6 +93,7 @@ class PostViewTests(TestCase):
         post_text_0 = first_object.text
         self.assertEqual(post_author_0, PostViewTests.post.author.username)
         self.assertEqual(post_text_0, PostViewTests.post.text)
+        self.assertEqual(first_object.image, PostViewTests.post.image)
         self.assertEqual(len(response.context['page_obj']), 1)
 
     def test_posts_group_list_show_correct_context(self):
@@ -78,6 +106,7 @@ class PostViewTests(TestCase):
         post_group_0 = first_object.group
         self.assertEquals(group_name, PostViewTests.post.group)
         self.assertEqual(post_group_0, PostViewTests.post.group)
+        self.assertEqual(first_object.image, PostViewTests.post.image)
         self.assertEqual(len(response.context['page_obj']), 1)
 
     def test_posts_group_list_show_correct_context_other_group(self):
@@ -97,6 +126,9 @@ class PostViewTests(TestCase):
         post_author = response.context['author'].username
         self.assertEquals(post_count, 1)
         self.assertEqual(post_author, PostViewTests.post.author.username)
+        self.assertEqual(
+            response.context['page_obj'][0].image, PostViewTests.post.image
+        )
         self.assertEqual(len(response.context['page_obj']), 1)
 
     def test_posts_post_detail_show_correct_context(self):
@@ -113,6 +145,7 @@ class PostViewTests(TestCase):
         form_fields = {
             'text': forms.fields.CharField,
             'group': forms.fields.ChoiceField,
+            'image': forms.fields.ImageField,
         }
         for value, expected in form_fields.items():
             with self.subTest(value=value):
@@ -127,6 +160,7 @@ class PostViewTests(TestCase):
         form_fields = {
             'text': forms.fields.CharField,
             'group': forms.fields.ChoiceField,
+            'image': forms.fields.ImageField,
         }
         for value, expected in form_fields.items():
             with self.subTest(value=value):
