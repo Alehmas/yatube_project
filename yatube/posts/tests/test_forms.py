@@ -8,7 +8,7 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from ..forms import PostForm
-from ..models import Group, Post
+from ..models import Comment, Group, Post
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.MEDIA_ROOT)
 
@@ -102,6 +102,23 @@ class PostsCreateFormTests(TestCase):
                 text='Тестовый пост3'
             ).exists()
         )
+
+    def test_posts_comments(self):
+        """Создается комментарий"""
+        post = Post.objects.get(id='1')
+        comments_count = post.comments.count()
+        form_data = {
+            'text': 'Тестовый комментарий',
+        }
+        response = self.authorized_client.post(
+            reverse('posts:add_comment', kwargs={'post_id': post.id}),
+            data=form_data,
+            follow=True
+        )
+        self.assertRedirects(response, reverse(
+            'posts:post_detail', kwargs={'post_id': post.id}))
+        self.assertEqual(post.comments.count(), comments_count+1)
+        self.assertEqual(Comment.objects.last().text, form_data['text'])
 
     def test_posts_labels(self):
         """У полей формы есть label"""

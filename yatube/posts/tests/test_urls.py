@@ -68,6 +68,15 @@ class PostURLTests(TestCase):
         self.assertRedirects(
             response, f'/auth/login/?next=/posts/{PostURLTests.post.id}/edit/')
 
+    def test_add_comment_url_anonymous_on_admin_login(self):
+        """Страница posts/1/comment перенаправит анонимного
+        пользователя на страницу логина."""
+        response = self.client.get(
+            f'/posts/{PostURLTests.post.id}/comment', follow=True)
+        self.assertRedirects(
+            response,
+            f'/auth/login/?next=/posts/{PostURLTests.post.id}/comment')
+
     # Проверка вызываемых шаблонов для каждого адреса
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
