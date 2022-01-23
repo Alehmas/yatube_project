@@ -51,8 +51,8 @@ class PostModelTest(TestCase):
         """Проверим, что у модели Post help_text совпадает с ожидаемым."""
         post = PostModelTest.post
         field_help_text = {
-            'text': 'Введите текст поста',
-            'group': 'Выберите группу',
+            'text': 'Текст нового поста',
+            'group': 'Группа, к которой будет относиться пост',
         }
         for field, expected_value in field_help_text.items():
             with self.subTest(field=field):

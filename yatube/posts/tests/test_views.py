@@ -4,6 +4,7 @@ import tempfile
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
@@ -95,6 +96,24 @@ class PostViewTests(TestCase):
         self.assertEqual(post_text_0, PostViewTests.post.text)
         self.assertEqual(first_object.image, PostViewTests.post.image)
         self.assertEqual(len(response.context['page_obj']), 1)
+
+    def test_posts_index_add_cash(self):
+        """Шаблон index сохраняется в кэш"""
+        posts_count_before = Post.objects.count()
+        response_1 = self.authorized_client.get(reverse('posts:index'))
+        Post.objects.create(
+            author=self.user,
+            text='Тестовый пост5',
+            group=PostViewTests.group,
+            image=PostViewTests.uploaded,
+        )
+        response_2 = self.authorized_client.get(reverse('posts:index'))
+        posts_count = Post.objects.count()
+        self.assertEqual(posts_count, posts_count_before+1)
+        self.assertEqual(response_1.content, response_2.content)
+        cache.clear()
+        response_3 = self.authorized_client.get(reverse('posts:index'))
+        self.assertNotEqual(response_2.content, response_3.content)
 
     def test_posts_group_list_show_correct_context(self):
         """Шаблон group_list сформирован с правильным контекстом."""

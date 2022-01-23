@@ -35,11 +35,12 @@ class Post(models.Model):
     text = models.TextField(
         verbose_name='Текст поста',
         max_length=200,
-        help_text='Введите текст поста'
+        help_text='Текст нового поста'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
-        auto_now_add=True
+        auto_now_add=True,
+        db_index=True
     )
     author = models.ForeignKey(
         User,
@@ -54,7 +55,7 @@ class Post(models.Model):
         blank=True,
         null=True,
         related_name='posts',
-        help_text='Выберите группу'
+        help_text='Группа, к которой будет относиться пост'
     )
     image = models.ImageField(
         'Картинка',
@@ -87,7 +88,7 @@ class Comment(models.Model):
     text = models.TextField(
         verbose_name='Текст комментария',
         max_length=200,
-        help_text='Введите текст комментария'
+        help_text='Текст нового комментария'
     )
     created = models.DateTimeField(
         verbose_name='Дата публикации',
