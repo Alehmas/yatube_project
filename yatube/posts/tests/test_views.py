@@ -157,6 +157,8 @@ class PostViewTests(TestCase):
         )
         self.assertEqual(response.context['post'], PostViewTests.post)
         self.assertEqual(response.context['posts_count'], 1)
+        self.assertEqual(
+            response.context['post'].image, PostViewTests.post.image)
 
     def test_posts_post_create_show_correct_context(self):
         """Шаблон post_create сформирован с правильным контекстом."""
