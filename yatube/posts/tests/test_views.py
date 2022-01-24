@@ -99,21 +99,23 @@ class PostViewTests(TestCase):
 
     def test_posts_index_add_cash(self):
         """Шаблон index сохраняется в кэш"""
-        posts_count_before = Post.objects.count()
-        response_1 = self.authorized_client.get(reverse('posts:index'))
-        Post.objects.create(
+        post = Post.objects.create(
             author=self.user,
             text='Тестовый пост5',
             group=PostViewTests.group,
             image=PostViewTests.uploaded,
         )
+        posts_count_before = Post.objects.count()
+        response_1 = self.authorized_client.get(reverse('posts:index'))
+        post.delete()
+        posts_count = Post.objects.count()
         response_2 = self.authorized_client.get(reverse('posts:index'))
         posts_count = Post.objects.count()
-        self.assertEqual(posts_count, posts_count_before+1)
+        self.assertEqual(posts_count, posts_count_before-1)
         self.assertEqual(response_1.content, response_2.content)
         cache.clear()
         response_3 = self.authorized_client.get(reverse('posts:index'))
-        self.assertNotEqual(response_2.content, response_3.content)
+        self.assertNotEqual(response_1.content, response_3.content)
 
     def test_posts_group_list_show_correct_context(self):
         """Шаблон group_list сформирован с правильным контекстом."""
