@@ -8,7 +8,7 @@ from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from posts.models import Group, Post
+from posts.models import Follow, Group, Post
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.MEDIA_ROOT)
 
@@ -21,6 +21,7 @@ class PostViewTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
+        cls.user1 = User.objects.create_user(username='user_test1')
         cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='test-slug',
@@ -59,6 +60,8 @@ class PostViewTests(TestCase):
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(PostViewTests.user)
+        self.authorized_client1 = Client()
+        self.authorized_client1.force_login(PostViewTests.user1)
 
     # Проверяем используемые шаблоны
     def test_posts_pages_uses_correct_template(self):
@@ -204,6 +207,34 @@ class PostViewTests(TestCase):
         for expected, value in form_fields.items():
             with self.subTest(value=value):
                 self.assertEquals(value, expected)
+
+    def test_posts_profile_follow_unfollow(self):
+        """Авторизованный пользователь может подписываться
+        на других пользователей и удалять их из подписок"""
+        following = Follow.objects.create(user=self.user1, author=self.user)
+        response1 = self.authorized_client1.get(reverse('posts:follow_index'))
+        count_following = len(response1.context['page_obj'])
+        following.delete()
+        response2 = self.authorized_client1.get(reverse('posts:follow_index'))
+        count_following_after = len(response2.context['page_obj'])
+        self.assertEquals(count_following, 1)
+        self.assertEquals(count_following_after, 0)
+
+    def test_posts_follow_index(self):
+        """Шаблон follow_index сформирован с правильным контекстом полей."""
+        user2 = User.objects.create_user(username='test2')
+        authorized_client2 = Client()
+        authorized_client2.force_login(user2)
+        Follow.objects.create(user=self.user1, author=self.user)
+        post_user = Post.objects.create(
+            author=self.user,
+            text='Тестовый пост для user1',
+        )
+        response1 = self.authorized_client1.get(reverse('posts:follow_index'))
+        response2 = authorized_client2.get(reverse('posts:follow_index'))
+        last_post_user1 = response1.context['page_obj'][0]
+        self.assertEquals(last_post_user1.text, post_user.text)
+        self.assertEquals(len(response2.context['page_obj']), 0)
 
 
 # Проверяем пагинатор
