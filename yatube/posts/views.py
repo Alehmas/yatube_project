@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CommentForm, PostForm
-from .models import Group, Post, User
+from .models import Follow, Group, Post, User
 
 
 def index(request):
@@ -47,11 +47,16 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     posts_count = paginator.count
+    if Follow.objects.filter(user=request.user, author=author):
+        follow_status = True
+    else:
+        follow_status = False
     context = {
         'page_obj': page_obj,
         'title': title,
         'posts_count': posts_count,
         'author': author,
+        'following': follow_status,
     }
     return render(request, template, context)
 
@@ -119,3 +124,34 @@ def add_comment(request, post_id):
         comment.post = post
         comment.save()
     return redirect('posts:post_detail', post_id=post_id)
+
+
+@login_required
+def follow_index(request):
+    posts = Post.objects.filter(author__following__user=request.user)
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    title = 'Посты избранных авторов'
+    context = {
+        'page_obj': page_obj,
+        'title': title,
+    }
+    return render(request, 'posts/follow.html', context)
+
+
+@login_required
+def profile_follow(request, username):
+    author = get_object_or_404(User, username=username)
+    user = request.user
+    if user != author:
+        Follow.objects.get_or_create(user=user, author=author)
+    return redirect('posts:profile', author)
+
+
+@login_required
+def profile_unfollow(request, username):
+    author = get_object_or_404(User, username=username)
+    follow = Follow.objects.get(user=request.user, author=author)
+    follow.delete()
+    return redirect('posts:profile', author)

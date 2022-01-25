@@ -6,10 +6,9 @@
 
 {% block content %}
 {% load cache %}
-  {% cache 20 index_page page_obj.number %}
   {% load thumbnail %}
-    {% include 'posts/includes/switcher.html' with index=True %}
-    <h1>Последние обновления на сайте</h1>
+    {% include 'posts/includes/switcher.html' with follow=True %}
+    <h1>Посты избранных авторов</h1>
     {% for post in page_obj %}
       <article>
         <ul>
@@ -29,6 +28,5 @@
       {% if post.group %}<a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>{% endif %}
       {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
-  {% endcache %}
   {% include 'posts/includes/paginator.html' %} 
 {% endblock %}
