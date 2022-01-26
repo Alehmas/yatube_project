@@ -47,7 +47,8 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     posts_count = paginator.count
-    if Follow.objects.filter(user=request.user, author=author):
+    user = request.user
+    if user.id and Follow.objects.filter(user=user, author=author):
         follow_status = True
     else:
         follow_status = False
