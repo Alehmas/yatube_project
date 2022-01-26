@@ -10,7 +10,7 @@ from django.urls import reverse
 from ..forms import PostForm
 from ..models import Comment, Group, Post
 
-TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.MEDIA_ROOT)
+TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 User = get_user_model()
 
@@ -117,7 +117,7 @@ class PostsCreateFormTests(TestCase):
         )
         self.assertRedirects(response, reverse(
             'posts:post_detail', kwargs={'post_id': post.id}))
-        self.assertEqual(post.comments.count(), comments_count+1)
+        self.assertEqual(post.comments.count(), comments_count + 1)
         self.assertEqual(Comment.objects.last().text, form_data['text'])
 
     def test_posts_labels(self):
