@@ -114,7 +114,7 @@ class PostViewTests(TestCase):
         posts_count = Post.objects.count()
         response_2 = self.authorized_client.get(reverse('posts:index'))
         posts_count = Post.objects.count()
-        self.assertEqual(posts_count, posts_count_before-1)
+        self.assertEqual(posts_count, posts_count_before - 1)
         self.assertEqual(response_1.content, response_2.content)
         cache.clear()
         response_3 = self.authorized_client.get(reverse('posts:index'))
@@ -208,17 +208,35 @@ class PostViewTests(TestCase):
             with self.subTest(value=value):
                 self.assertEquals(value, expected)
 
-    def test_posts_profile_follow_unfollow(self):
+    def test_posts_profile_follow(self):
         """Авторизованный пользователь может подписываться
-        на других пользователей и удалять их из подписок"""
-        following = Follow.objects.create(user=self.user1, author=self.user)
-        response1 = self.authorized_client1.get(reverse('posts:follow_index'))
-        count_following = len(response1.context['page_obj'])
-        following.delete()
-        response2 = self.authorized_client1.get(reverse('posts:follow_index'))
-        count_following_after = len(response2.context['page_obj'])
-        self.assertEquals(count_following, 1)
-        self.assertEquals(count_following_after, 0)
+        на других пользователей"""
+        following = Follow.objects.filter(user=self.user1, author=self.user)
+        following_count = following.count()
+        self.authorized_client1.get(reverse(
+            'posts:profile_follow',
+            kwargs={'username': PostViewTests.user.username})
+        )
+        following1 = Follow.objects.filter(user=self.user1, author=self.user)
+        following1_count = following1.count()
+        self.assertEquals(following_count + 1, following1_count)
+
+    def test_posts_profile_unfollow(self):
+        """Авторизованный пользователь может удалять
+        других пользователей из подписок"""
+        self.authorized_client1.get(reverse(
+            'posts:profile_follow',
+            kwargs={'username': PostViewTests.user.username})
+        )
+        following = Follow.objects.filter(user=self.user1, author=self.user)
+        following_count = following.count()
+        self.authorized_client1.get(reverse(
+            'posts:profile_unfollow',
+            kwargs={'username': PostViewTests.user.username})
+        )
+        following1 = Follow.objects.filter(user=self.user1, author=self.user)
+        following1_count = following1.count()
+        self.assertEquals(following_count, following1_count + 1)
 
     def test_posts_follow_index(self):
         """Шаблон follow_index сформирован с правильным контекстом полей."""

@@ -72,10 +72,10 @@ class PostURLTests(TestCase):
         """Страница posts/1/comment перенаправит анонимного
         пользователя на страницу логина."""
         response = self.client.get(
-            f'/posts/{PostURLTests.post.id}/comment', follow=True)
+            f'/posts/{PostURLTests.post.id}/comment/', follow=True)
         self.assertRedirects(
             response,
-            f'/auth/login/?next=/posts/{PostURLTests.post.id}/comment')
+            f'/auth/login/?next=/posts/{PostURLTests.post.id}/comment/')
 
     # Проверка вызываемых шаблонов для каждого адреса
     def test_urls_uses_correct_template(self):
