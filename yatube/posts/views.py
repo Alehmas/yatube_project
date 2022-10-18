@@ -22,7 +22,7 @@ def index(request):
 
 
 def group_posts(request, slug):
-    """Функция обработки главной страницы"""
+    """Функция обработки страницы группы"""
     group = get_object_or_404(Group, slug=slug)
     posts = group.posts.all()
     paginator = Paginator(posts, 10)
@@ -39,6 +39,7 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
+    """Функция обработки страницы пользователя"""
     author = get_object_or_404(User, username=username)
     template = 'posts/profile.html'
     title = f'Профайл пользователя {author.get_full_name()}'
@@ -63,6 +64,7 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
+    """Функция обработки страницы поста"""
     template = 'posts/post_detail.html'
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comments.all()
@@ -81,6 +83,7 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
+    """Функция создания поста"""
     template = 'posts/create_post.html'
     form = PostForm(
         request.POST or None,
@@ -96,6 +99,7 @@ def post_create(request):
 
 @login_required
 def post_edit(request, post_id):
+    """Функция редактирования поста"""
     template = 'posts/create_post.html'
     post = get_object_or_404(Post, pk=post_id)
     if post.author != request.user:
@@ -117,6 +121,7 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
+    """Функция создания комментария"""
     post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
@@ -129,6 +134,7 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
+    """Функция отображения подписок"""
     posts = Post.objects.filter(author__following__user=request.user)
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
@@ -143,6 +149,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
+    """Функция создания подписки"""
     author = get_object_or_404(User, username=username)
     user = request.user
     if user != author:
@@ -152,6 +159,7 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
+    """Функция удаления подписки"""
     author = get_object_or_404(User, username=username)
     follow = get_object_or_404(
         Follow, user=request.user, author=author)
