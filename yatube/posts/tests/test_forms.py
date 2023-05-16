@@ -22,13 +22,13 @@ class PostsCreateFormTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
-            title='Тестовая группа',
+            title='Test group',
             slug='test-slug',
-            description='Тестовое описание',
+            description='Test description',
         )
         Post.objects.create(
             author=cls.user,
-            text='Тестовый пост1',
+            text='Test post1',
             group=PostsCreateFormTests.group,
         )
         cls.form = PostForm()
@@ -43,8 +43,8 @@ class PostsCreateFormTests(TestCase):
         self.authorized_client.force_login(PostsCreateFormTests.user)
 
     def test_create_posts_in_base(self):
-        """Создаётся новая запись в базе данных,
-        cо страницы создания поста create_post."""
+        """A new entry is created in the database,
+        from the create_post page."""
         posts_count = Post.objects.count()
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -60,7 +60,7 @@ class PostsCreateFormTests(TestCase):
             content_type='image/gif'
         )
         form_data = {
-            'text': 'Тестовый пост2',
+            'text': 'Test post2',
             'group': self.group.id,
             'image': uploaded,
         }
@@ -80,11 +80,11 @@ class PostsCreateFormTests(TestCase):
         )
 
     def test_edit_posts_in_base(self):
-        """Происходит изменение поста с post_id в базе данных,
-        со страницы редактирования поста post_edit"""
+        """A post with post_id is being modified in the database,
+        from the post_edit edit page"""
         posts_count = Post.objects.count()
         form_data = {
-            'text': 'Тестовый пост3',
+            'text': 'Test post3',
             'group': PostsCreateFormTests.group.id
         }
         post = Post.objects.get(id='1')
@@ -99,16 +99,16 @@ class PostsCreateFormTests(TestCase):
         self.assertTrue(
             Post.objects.filter(
                 id='1',
-                text='Тестовый пост3'
+                text='Test post3'
             ).exists()
         )
 
     def test_posts_comments(self):
-        """Создается комментарий"""
+        """A comment is created"""
         post = Post.objects.last()
         comments_count = post.comments.count()
         form_data = {
-            'text': 'Тестовый комментарий',
+            'text': 'Test commentary',
         }
         response = self.authorized_client.post(
             reverse('posts:add_comment', kwargs={'post_id': post.id}),
@@ -124,10 +124,10 @@ class PostsCreateFormTests(TestCase):
         self.assertEqual(comment.post_id, post.id)
 
     def test_posts_labels(self):
-        """У полей формы есть label"""
+        """The form fields have a label"""
         form_data = {
-            'text': 'Текст поста',
-            'group': 'Группа'
+            'text': 'Post text',
+            'group': 'Group'
         }
         for field, expected in form_data.items():
             self.assertEquals(
@@ -135,10 +135,10 @@ class PostsCreateFormTests(TestCase):
             )
 
     def test_posts_help_text(self):
-        """У полей формы есть hepl_text"""
+        """Form fields have hepl_text"""
         form_data = {
-            'text': 'Текст нового поста',
-            'group': 'Группа, к которой будет относиться пост'
+            'text': 'The text of the new post',
+            'group': 'The group to which the post will belong'
         }
         for field, expected in form_data.items():
             self.assertEquals(

@@ -11,8 +11,7 @@ class UsersCreateFormTests(TestCase):
         self.guest_client = Client()
 
     def test_signup_add_user_in_base(self):
-        """При заполнении формы reverse('users:signup')
-        создаётся новый пользователь."""
+        """When you fill out the reverse('users:signup') form creates a new user."""
         users_count = User.objects.count()
         form_data = {
             'first_name': 'Oleg',

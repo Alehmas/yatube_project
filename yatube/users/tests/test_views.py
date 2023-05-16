@@ -19,7 +19,7 @@ class UsersViewTests(TestCase):
 
     # Проверяем используемые шаблоны
     def test_users_pages_uses_correct_template_guest(self):
-        """URL-адрес в users использует соответствующий шаблон."""
+        """The URL in users uses the appropriate template."""
         templates_page_names = {
             reverse('users:signup'): 'users/signup.html',
             reverse('users:login'): 'users/login.html',
@@ -40,7 +40,7 @@ class UsersViewTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_users_pages_uses_correct_template_authorized(self):
-        """URL-адрес в users использует соответствующий шаблон."""
+        """The URL in users uses the appropriate template."""
         templates_page_names = {
             reverse('users:password_change_form'):
             'users/password_change_form.html',
@@ -53,7 +53,7 @@ class UsersViewTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_users_signup_page_show_correct_context(self):
-        """Шаблон signup сформирован с правильным контекстом."""
+        """The signup template is generated with the correct context."""
         response = self.guest_client.get(reverse('users:signup'))
         form_fields = {
             'first_name': forms.fields.CharField,

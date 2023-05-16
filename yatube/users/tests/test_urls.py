@@ -15,11 +15,11 @@ class UsersURLTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(UsersURLTests.user)
 
-    # Проверяем общедоступные страницы
+    # Checking public pages
     def test_users_url_guest_client(self):
-        """Страница auth/signup/, auth/login/, auth/password_reset/,
+        """Page auth/signup/, auth/login/, auth/password_reset/,
         auth/password_reset/done/, auth/auth/reset/NQ/set-password/,
-        auth/reset/done/ доступна любому пользователю."""
+        auth/reset/done/ is available to any user."""
         users_url_names = {
             '/auth/signup/': 200,
             '/auth/login/': 200,
@@ -33,10 +33,10 @@ class UsersURLTests(TestCase):
                 response = self.guest_client.get(url)
                 self.assertEquals(response.status_code, status_code)
 
-    # Проверяем доступность страниц для авторизованного пользователя
+    # Checking the availability of pages for an authorized user
     def test_users_url_authorized_url(self):
-        """Страница auth/password_change/, auth/password_change/done/,
-        auth/logout/ доступна авторизованному пользователю."""
+        """The auth/password_change/, auth/password_change/done/,
+        auth/logout/ is available to an authorized user."""
         users_url_names = {
             '/auth/password_change/': 200,
             '/auth/password_change/done/': 200,
@@ -47,10 +47,10 @@ class UsersURLTests(TestCase):
                 response = self.authorized_client.get(url)
                 self.assertEquals(response.status_code, status_code)
 
-    # Проверяем редиректы для неавторизованного пользователя
+    # Checking redirects for unauthorized users
     def test_users_password_change_url_anonymous_on_admin_login(self):
-        """Страница /auth/password_change/ перенаправит анонимного
-        пользователя на страницу логина."""
+        """The /auth/password_change/ page will redirect the anonymous
+        user to the login page."""
         response = self.guest_client.get(
             '/auth/password_change/', follow=True)
         self.assertRedirects(

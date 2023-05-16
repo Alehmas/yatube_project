@@ -8,7 +8,7 @@ class AboutURLTests(TestCase):
         self.guest_client = Client()
 
     def test_about_urls(self):
-        """Проверка доступности адреса /about/author/, /about/tech/."""
+        """Checking availability of /about/author/, /about/tech/."""
         about_url_names = {
             '/about/author/': HTTPStatus.OK,
             '/about/tech/': HTTPStatus.OK,
@@ -19,7 +19,7 @@ class AboutURLTests(TestCase):
                 self.assertEquals(response.status_code, status_code)
 
     def test_about_url_uses_correct_template(self):
-        """Проверка шаблонов для адресов /about/author/, /about/tech/."""
+        """Checking templates for /about/author/, /about/tech/."""
         about_url_names = {
             '/about/author/': 'about/author.html',
             '/about/tech/': 'about/tech.html',

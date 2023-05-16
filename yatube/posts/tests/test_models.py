@@ -12,17 +12,17 @@ class PostModelTest(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
-            title='Тестовая группа',
-            slug='Тестовый слаг',
-            description='Тестовое описание',
+            title='Test group',
+            slug='Test slug',
+            description='Test description',
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='Тестовый пост',
+            text='Test post',
         )
 
     def test_models_have_correct_object_names(self):
-        """Проверяем, что у моделей корректно работает __str__."""
+        """Check that models have __str__ working correctly."""
         group = PostModelTest.group
         post = PostModelTest.post
         field_str = {
@@ -34,13 +34,13 @@ class PostModelTest(TestCase):
                 self.assertEqual(expected_value, str(model))
 
     def test_post_verbose_name(self):
-        """Проверим, что у модели Post verbose_name совпадает с ожидаемым."""
+        """Let's check that the Post verbose_name of the model matches the expected one."""
         post = PostModelTest.post
         field_verboses = {
-            'text': 'Текст поста',
-            'pub_date': 'Дата публикации',
-            'author': 'Автор',
-            'group': 'Группа',
+            'text': 'Post text',
+            'pub_date': 'Date of publication',
+            'author': 'Author',
+            'group': 'Group',
         }
         for field, expected_value in field_verboses.items():
             with self.subTest(field=field):
@@ -48,11 +48,11 @@ class PostModelTest(TestCase):
                     post._meta.get_field(field).verbose_name, expected_value)
 
     def test_post_help_text(self):
-        """Проверим, что у модели Post help_text совпадает с ожидаемым."""
+        """Let's check that the Post help_text model is the same as expected."""
         post = PostModelTest.post
         field_help_text = {
-            'text': 'Текст нового поста',
-            'group': 'Группа, к которой будет относиться пост',
+            'text': 'The text of the new post',
+            'group': 'The group to which the post will belong',
         }
         for field, expected_value in field_help_text.items():
             with self.subTest(field=field):

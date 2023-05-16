@@ -9,8 +9,8 @@ class AboutViewsTests(TestCase):
         self.guest_client = Client()
 
     def test_about_page_accessible_by_name(self):
-        """URLs, генерируемыe при помощи имен 'about:author',
-        'about:tech' доступены."""
+        """URLs generated with 'about:author' names,
+        'about:tech' are available."""
         about_name_urls = {
             'about:author': HTTPStatus.OK,
             'about:tech': HTTPStatus.OK,
@@ -21,8 +21,8 @@ class AboutViewsTests(TestCase):
                 self.assertEquals(response.status_code, status_code)
 
     def test_about_page_uses_correct_template(self):
-        """При запросе к 'about:author', 'about:tech'
-        применяются верные шаблоны"""
+        """When querying 'about:author', 'about:tech'
+        the correct templates are applied"""
         about_name_urls = {
             'about:author': 'about/author.html',
             'about:tech': 'about/tech.html',

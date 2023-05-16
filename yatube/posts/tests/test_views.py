@@ -23,14 +23,14 @@ class PostViewTests(TestCase):
         cls.user = User.objects.create_user(username='auth')
         cls.user1 = User.objects.create_user(username='user_test1')
         cls.group = Group.objects.create(
-            title='Тестовая группа',
+            title='Test group',
             slug='test-slug',
-            description='Тестовое описание',
+            description='Test description',
         )
         cls.group2 = Group.objects.create(
-            title='Тестовая группа2',
+            title='Test group2',
             slug='test-slug2',
-            description='Тестовое описание2',
+            description='Test description2',
         )
         cls.image = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -47,7 +47,7 @@ class PostViewTests(TestCase):
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='Тестовый пост',
+            text='Test post',
             group=PostViewTests.group,
             image=PostViewTests.uploaded,
         )
@@ -63,9 +63,9 @@ class PostViewTests(TestCase):
         self.authorized_client1 = Client()
         self.authorized_client1.force_login(PostViewTests.user1)
 
-    # Проверяем используемые шаблоны
+    # Checking the templates used
     def test_posts_pages_uses_correct_template(self):
-        """URL-адрес в posts использует соответствующий шаблон."""
+        """The URL in posts uses the appropriate template."""
         templates_page_names = {
             reverse('posts:index'): 'posts/index.html',
             reverse(
@@ -87,10 +87,10 @@ class PostViewTests(TestCase):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
 
-    # Проверяем, что типы полей формы в словаре context
-    # соответствуют ожиданиям
+    # Check that the types of form fields in the context dictionary
+    # match the expectations
     def test_posts_index_show_correct_context(self):
-        """Шаблон index сформирован с правильным контекстом."""
+        """The index template is generated with the correct context."""
         response = self.authorized_client.get(reverse('posts:index'))
         first_object = response.context['page_obj'][0]
         post_author_0 = first_object.author.username
@@ -101,10 +101,10 @@ class PostViewTests(TestCase):
         self.assertEqual(len(response.context['page_obj']), 1)
 
     def test_posts_index_add_cash(self):
-        """Шаблон index сохраняется в кэш"""
+        """The index template is saved in the cache"""
         post = Post.objects.create(
             author=self.user,
-            text='Тестовый пост5',
+            text='Test post5',
             group=PostViewTests.group,
             image=PostViewTests.uploaded,
         )
@@ -121,7 +121,7 @@ class PostViewTests(TestCase):
         self.assertNotEqual(response_1.content, response_3.content)
 
     def test_posts_group_list_show_correct_context(self):
-        """Шаблон group_list сформирован с правильным контекстом."""
+        """The group_list template is generated with the correct context."""
         response = self.authorized_client.get(reverse(
             'posts:group_list', kwargs={'slug': PostViewTests.group.slug})
         )
@@ -134,15 +134,15 @@ class PostViewTests(TestCase):
         self.assertEqual(len(response.context['page_obj']), 1)
 
     def test_posts_group_list_show_correct_context_other_group(self):
-        """Шаблон group_list сформирован с правильным контекстом,
-        для второй группы."""
+        """The group_list template is generated with the correct context,
+        for the second group."""
         response = self.authorized_client.get(reverse(
             'posts:group_list', kwargs={'slug': PostViewTests.group2.slug})
         )
         self.assertEqual(len(response.context['page_obj']), 0)
 
     def test_posts_profile_show_correct_context(self):
-        """Шаблон profile сформирован с правильным контекстом."""
+        """The profile template is formed with the right context."""
         response = self.authorized_client.get(reverse(
             'posts:profile', kwargs={'username': PostViewTests.post.author})
         )
@@ -156,7 +156,7 @@ class PostViewTests(TestCase):
         self.assertEqual(len(response.context['page_obj']), 1)
 
     def test_posts_post_detail_show_correct_context(self):
-        """Шаблон post_detail сформирован с правильным контекстом."""
+        """The post_detail template is generated with the correct context."""
         response = self.authorized_client.get(reverse(
             'posts:post_detail', kwargs={'post_id': PostViewTests.post.id})
         )
@@ -166,7 +166,7 @@ class PostViewTests(TestCase):
             response.context['post'].image, PostViewTests.post.image)
 
     def test_posts_post_create_show_correct_context(self):
-        """Шаблон post_create сформирован с правильным контекстом."""
+        """The post_create template is generated with the correct context."""
         response = self.authorized_client.get(reverse('posts:post_create'))
         form_fields = {
             'text': forms.fields.CharField,
@@ -179,7 +179,7 @@ class PostViewTests(TestCase):
                 self.assertIsInstance(form_field, expected)
 
     def test_posts_post_edit_show_correct_field(self):
-        """Шаблон post_edit сформирован с правильными контекстом."""
+        """The post_edit template is generated with the correct contexts."""
         response = self.authorized_client.get(reverse(
             'posts:post_edit', kwargs={'post_id': PostViewTests.post.id})
         )
@@ -194,7 +194,7 @@ class PostViewTests(TestCase):
                 self.assertIsInstance(form_field, expected)
 
     def test_posts_post_edit_show_correct_context(self):
-        """Шаблон post_edit сформирован с правильным контекстом полей."""
+        """The post_edit template is generated with the correct field context."""
         response = self.authorized_client.get(reverse(
             'posts:post_edit', kwargs={'post_id': PostViewTests.post.id})
         )
@@ -209,8 +209,8 @@ class PostViewTests(TestCase):
                 self.assertEquals(value, expected)
 
     def test_posts_profile_follow(self):
-        """Авторизованный пользователь может подписываться
-        на других пользователей"""
+        """An authorized user can subscribe
+        to other users"""
         following = Follow.objects.filter(user=self.user1, author=self.user)
         following_count = following.count()
         self.authorized_client1.get(reverse(
@@ -222,8 +222,8 @@ class PostViewTests(TestCase):
         self.assertEquals(following_count + 1, following1_count)
 
     def test_posts_profile_unfollow(self):
-        """Авторизованный пользователь может удалять
-        других пользователей из подписок"""
+        """An authorized user can delete
+        other users from subscriptions"""
         self.authorized_client1.get(reverse(
             'posts:profile_follow',
             kwargs={'username': PostViewTests.user.username})
@@ -239,14 +239,14 @@ class PostViewTests(TestCase):
         self.assertEquals(following_count, following1_count + 1)
 
     def test_posts_follow_index(self):
-        """Шаблон follow_index сформирован с правильным контекстом полей."""
+        """The follow_index template is generated with the correct field context."""
         user2 = User.objects.create_user(username='test2')
         authorized_client2 = Client()
         authorized_client2.force_login(user2)
         Follow.objects.create(user=self.user1, author=self.user)
         post_user = Post.objects.create(
             author=self.user,
-            text='Тестовый пост для user1',
+            text='Test post for user1',
         )
         response1 = self.authorized_client1.get(reverse('posts:follow_index'))
         response2 = authorized_client2.get(reverse('posts:follow_index'))
@@ -255,22 +255,22 @@ class PostViewTests(TestCase):
         self.assertEquals(len(response2.context['page_obj']), 0)
 
 
-# Проверяем пагинатор
+# Checking the paginator
 class PaginatorViewsTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
-            title='Тестовая группа',
+            title='Test group',
             slug='test-slug',
-            description='Тестовое описание',
+            description='Test description',
         )
         number_posts = 13
         for post_num in range(number_posts):
             Post.objects.create(
                 author=cls.user,
-                text='Тестовый пост' + str(post_num),
+                text='Test post' + str(post_num),
                 group=PaginatorViewsTest.group,
             )
 
@@ -279,7 +279,7 @@ class PaginatorViewsTest(TestCase):
         self.authorized_client.force_login(PaginatorViewsTest.user)
 
     def test_paginator_page(self):
-        """Количество постов на 1 и 2 страницах index, group_list, profile."""
+        """Number of posts on pages 1 and 2 index, group_list, profile."""
         templates_page_names = {
             reverse('posts:index'): 10,
             reverse('posts:index') + '?page=2': 3,

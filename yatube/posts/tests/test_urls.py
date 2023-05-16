@@ -13,23 +13,23 @@ class PostURLTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
-            title='Тестовая группа',
+            title='Test group',
             slug='test-slug',
-            description='Тестовое описание',
+            description='Test description',
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='Тестовый пост',
+            text='Test post',
         )
 
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(PostURLTests.user)
 
-    # Проверяем общедоступные страницы
+    # Checking public pages
     def test_posts_all_urls_guest_client(self):
-        """Страницы /, group/test-slug/, profile/auth/,
-        posts/1/ доступны любому пользователю."""
+        """The pages /, group/test-slug/, profile/auth/,
+        posts/1/ are available to any user."""
         posts_url_names = {
             '/': HTTPStatus.OK,
             f'/group/{PostURLTests.group.slug}/': HTTPStatus.OK,
@@ -41,45 +41,45 @@ class PostURLTests(TestCase):
                 response = self.client.get(url)
                 self.assertEquals(response.status_code, status_code)
 
-    # Проверяем доступность страниц для авторизованного пользователя
+    # Checking the availability of pages for an authorized user
     def test_create_post_url_autorized(self):
-        """Страница create/ доступна авторизованному пользователю."""
+        """The create/ page is available to the authorized user."""
         response = self.authorized_client.get('/create/')
         self.assertEquals(response.status_code, HTTPStatus.OK)
 
     def test_edit_post_url_autor(self):
-        """Страница posts/1/edit/ доступна автору."""
+        """The posts/1/edit/ page is available to the author."""
         response = self.authorized_client.get(
             f'/posts/{PostURLTests.post.id}/edit/')
         self.assertEquals(response.status_code, HTTPStatus.OK)
 
-    # Проверяем редиректы для неавторизованного пользователя
+    # Checking redirects for unauthorized users
     def test_create_post_url_anonymous_on_admin_login(self):
-        """Страница create/ перенаправит анонимного
-        пользователя на страницу логина."""
+        """The create/ page will redirect the anonymous
+        user to the login page."""
         response = self.client.get('/create/', follow=True)
         self.assertRedirects(response, '/auth/login/?next=/create/')
 
     def test_edit_post_url_anonymous_on_admin_login(self):
-        """Страница posts/1/edit/ перенаправит анонимного
-        пользователя на страницу логина."""
+        """The posts/1/edit/ page will redirect the anonymous
+        user to the login page."""
         response = self.client.get(
             f'/posts/{PostURLTests.post.id}/edit/', follow=True)
         self.assertRedirects(
             response, f'/auth/login/?next=/posts/{PostURLTests.post.id}/edit/')
 
     def test_add_comment_url_anonymous_on_admin_login(self):
-        """Страница posts/1/comment перенаправит анонимного
-        пользователя на страницу логина."""
+        """The posts/1/comment page will redirect the anonymous
+        user to the login page."""
         response = self.client.get(
             f'/posts/{PostURLTests.post.id}/comment/', follow=True)
         self.assertRedirects(
             response,
             f'/auth/login/?next=/posts/{PostURLTests.post.id}/comment/')
 
-    # Проверка вызываемых шаблонов для каждого адреса
+    # Checking the called patterns for each address
     def test_urls_uses_correct_template(self):
-        """URL-адрес использует соответствующий шаблон."""
+        """The URL uses the appropriate template."""
         templates_url_names = {
             '/': 'posts/index.html',
             f'/group/{PostURLTests.group.slug}/': 'posts/group_list.html',
@@ -94,6 +94,6 @@ class PostURLTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_unexisting_page(self):
-        """Страница unexisting_page/ вернет ошибку 404"""
+        """The unexisting_page/ page will return a 404 error"""
         response = self.client.get('/unexisting_page/')
         self.assertEquals(response.status_code, HTTPStatus.NOT_FOUND)

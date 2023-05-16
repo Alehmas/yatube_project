@@ -7,13 +7,13 @@ from .models import Follow, Group, Post, User
 
 
 def index(request):
-    """Функция обработки главной страницы"""
+    """Home page processing function"""
     post_list = Post.objects.all()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     template = 'posts/index.html'
-    title = 'Последние обновления на сайте'
+    title = 'Recent updates to the site'
     context = {
         'page_obj': page_obj,
         'title': title,
@@ -22,14 +22,14 @@ def index(request):
 
 
 def group_posts(request, slug):
-    """Функция обработки страницы группы"""
+    """Group page processing function"""
     group = get_object_or_404(Group, slug=slug)
     posts = group.posts.all()
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     template = 'posts/group_list.html'
-    title = f'Записи сообщества {group}'
+    title = f'Community posts {group}'
     context = {
         'group': group,
         'page_obj': page_obj,
@@ -39,10 +39,10 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    """Функция обработки страницы пользователя"""
+    """User page processing function"""
     author = get_object_or_404(User, username=username)
     template = 'posts/profile.html'
-    title = f'Профайл пользователя {author.get_full_name()}'
+    title = f'User profile {author.get_full_name()}'
     post_list = author.posts.all()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
@@ -64,7 +64,7 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-    """Функция обработки страницы поста"""
+    """Post page processing function"""
     template = 'posts/post_detail.html'
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comments.all()
@@ -83,7 +83,7 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
-    """Функция создания поста"""
+    """Create a post function"""
     template = 'posts/create_post.html'
     form = PostForm(
         request.POST or None,
@@ -99,7 +99,7 @@ def post_create(request):
 
 @login_required
 def post_edit(request, post_id):
-    """Функция редактирования поста"""
+    """Edit post function"""
     template = 'posts/create_post.html'
     post = get_object_or_404(Post, pk=post_id)
     if post.author != request.user:
@@ -121,7 +121,7 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
-    """Функция создания комментария"""
+    """Comment creation function"""
     post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
@@ -134,12 +134,12 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    """Функция отображения подписок"""
+    """Subscriptions display function"""
     posts = Post.objects.filter(author__following__user=request.user)
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    title = 'Посты избранных авторов'
+    title = "Selected authors' posts"
     context = {
         'page_obj': page_obj,
         'title': title,
@@ -149,7 +149,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    """Функция создания подписки"""
+    """Create a subscription function"""
     author = get_object_or_404(User, username=username)
     user = request.user
     if user != author:
@@ -159,7 +159,7 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
-    """Функция удаления подписки"""
+    """Delete subscription function"""
     author = get_object_or_404(User, username=username)
     follow = get_object_or_404(
         Follow, user=request.user, author=author)
