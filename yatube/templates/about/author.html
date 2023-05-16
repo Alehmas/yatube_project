@@ -1,16 +1,35 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  Об авторе проекта
+  About the project author
 {% endblock %}
 {% block content %}
-  <h1>Привет! Я, Олег Маслов.</h1>
-  <p>Мне 33 года. Родился и жил до 27 лет в Республике Беларусь. 
-      Последние 6 лет живу в городе Санкт-Петербурге. 
-      В Беларуси получил высшее образование по специальности инженер путей сообщения - строитель. 
-      На железной дороге проработал 2 года. Далее переехал в Санкт-Петербург и устроился менеджером 
-      отдела аренды и продажи, где и работаю по настоящее время. Всегда хотелось попробовать себя 
-      в роли разработчика и поэтому последние 3 года периодически занимался самообразованием. 
-      Пробовал изучать HTML, CSS, JS, Python. 
-      Решив воплотить мечту в реальность пришел в Яндекс.Практикум на курс Python-разработчик.</p>
+<div id="about-form">
+  <div class="container">
+    <div id="about-text">
+      <div class="card">
+        <div class="card-body">
+          <h3>Author information</h3>
+          <div class="row">
+            <div class="col-sm-12 col-md-2">
+              <img id="img-author-photo" src="" class="rounded mx-auto d-block" alt="">
+            </div>
+            <div class="col-sm-12 col-md-10">
+              <ul >
+                <li>Name: Aleh Maslau</li>
+                <li>
+                  GitHub:
+                  <a href="https://github.com/Oleg-2006" target="_blank">my projects</a>
+                </li>
+                <li>
+                  CV: <a href="" target="_blank">If you want to hire me</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -1,23 +1,49 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  Технологии
+  Technology
 {% endblock %}
 {% block content %}
   <div class="row">
-    <h1>Вот что я умею</h1>
-    <aside class="col-12 col-md-3">
+    <h2>Technologies used</h2>
+    <aside class="col-12 col-md-12">
       <ul class="list-group list-group-flush">
         <li class="list-group-item">
-          Python
+          <b>Python</b> is a high-level, general-purpose programming language. 
+          Its design philosophy emphasizes code readability with the use of significant indentation via the off-side rule.
+          Python is dynamically typed and garbage-collected. 
+          It supports multiple programming paradigms, including structured (particularly procedural), object-oriented and functional programming.
+          <i><a href="https://docs.python.org/3.9">Documentation</a></i>
         </li>
         <li class="list-group-item">
-          Django
+          <b>Django</b> is a free and open-source, Python-based web framework that follows the model–template–views (MTV) architectural pattern.
+          Django's primary goal is to ease the creation of complex, database-driven websites. 
+          The framework emphasizes reusability and "pluggability" of components, less code, low coupling, rapid development, and the principle of don't repeat yourself. 
+          Python is used throughout, even for settings, files, and data models. 
+          Django also provides an optional administrative create, read, update and delete interface that is generated dynamically through introspection and configured via admin models.
+          <i><a href="https://docs.djangoproject.com/en/2.2/">Documentation</a></i>
+        </li>
+        <li class="list-group-item">
+          <b>SQLite</b>  is a database engine written in the C programming language. 
+          It is not a standalone app; rather, it is a library that software developers embed in their apps. 
+          As such, it belongs to the family of embedded databases. It is the most widely deployed database engine, 
+          as it is used by several of the top web browsers, operating systems, mobile phones, and other embedded systems.
+          <i><a href="https://www.sqlite.org/docs.html">Documentation</a></i>
+        </li>
+        <li class="list-group-item">
+          The <b>Unittest</b> unit testing framework was originally inspired by JUnit and has a similar flavor as major unit testing frameworks in other languages. 
+          It supports test automation, sharing of setup and shutdown code for tests, aggregation of tests into collections, and independence of the tests 
+          from the reporting framework.
+          <i><a href="https://docs.python.org/3/library/unittest.html">Documentation</a></i>
+        </li>
+        <li class="list-group-item">
+          The HyperText Markup Language or <b>HTML</b> is the standard markup language for documents designed to be displayed in a web browser. 
+          It is often assisted by technologies such as Cascading Style Sheets (CSS) and scripting languages such as JavaScript. 
+          Web browsers receive HTML documents from a web server or from local storage and render the documents into multimedia web pages. 
+          HTML describes the structure of a web page semantically and originally included cues for its appearance.
+          <i><a href="https://developer.mozilla.org/en-US/docs/Web/HTML">Documentation</a></i>
         </li>
       </ul>
     </aside>
-    <article class="col-12 col-md-9">
-      <p>Для создания данного сайта использовался Django, SQL, HTML, CSS</p>
-    </article>
   </div>
 {% endblock %}

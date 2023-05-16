@@ -6,22 +6,22 @@
 {% block content %}
 {% load thumbnail %}
   <div class="mb-5">     
-    <h1>Все посты пользователя {{ user.get_full_name }} </h1>
-    <h3>Всего постов: {{ posts_count }} </h3>
+    <h1>All user posts {{ user.get_full_name }} </h1>
+    <h3>Total posts: {{ posts_count }} </h3>
     {% if user.is_authenticated and author != request.user %}
       {% if following %}
         <a
           class="btn btn-lg btn-light"
           href="{% url 'posts:profile_unfollow' author.username %}" role="button"
         >
-          Отписаться
+          Unsubscribe
         </a>
       {% else %}
           <a
             class="btn btn-lg btn-primary"
             href="{% url 'posts:profile_follow' author.username %}" role="button"
           >
-            Подписаться
+            Subscribe
           </a>
       {% endif %}
     {% endif %}
@@ -30,16 +30,16 @@
     <article>
       <ul>
         <li>
-          Дата публикации: {{ post.pub_date|date:"d E Y" }} 
+          Date of publication: {{ post.pub_date|date:"d E Y" }} 
         </li>
       </ul>
       {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
         <img class="card-img my-2" src="{{ im.url }}">
       {% endthumbnail %}
       <p>{{ post.text|linebreaksbr }}</p>
-      <a href="{% url 'posts:post_detail' post.pk %}">подробная информация </a>
+      <a href="{% url 'posts:post_detail' post.pk %}">Detailed information</a>
     </article>
-    {% if post.group %}<a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>{% endif %}         
+    {% if post.group %}<a href="{% url 'posts:group_list' post.group.slug %}">All group posts</a>{% endif %}         
     {% if not forloop.last %}<hr>{% endif %}
   {% endfor %}
   {% include 'posts/includes/paginator.html' %}
