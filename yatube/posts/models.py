@@ -6,6 +6,8 @@ User = get_user_model()
 
 
 class Group(models.Model):
+    """Model class for creating, deleting and editing a group."""
+
     title = models.CharField(
         verbose_name='Group',
         max_length=200,
@@ -32,6 +34,8 @@ class Group(models.Model):
 
 
 class Post(models.Model):
+    """Model class for creating, deleting and editing a post."""
+
     text = models.TextField(
         verbose_name='Post text',
         max_length=200,
@@ -73,6 +77,8 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    """Model class for creating, deleting and editing a comment."""
+
     post = models.ForeignKey(
         Post,
         verbose_name='Commentary',
@@ -100,6 +106,8 @@ class Comment(models.Model):
 
 
 class Follow(models.Model):
+    """Model class for creating and deleting a subscription."""
+
     user = models.ForeignKey(
         User,
         verbose_name='Follower',
