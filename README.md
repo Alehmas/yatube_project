@@ -97,3 +97,6 @@ The application is responsible for the context processors:
 - custom page 404
 - custom page 403
 - custom page 500
+
+## Authors
+- [Aleh Maslau](https://github.com/Oleg-2006)
