@@ -17,7 +17,7 @@ class UsersViewTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(UsersViewTests.user)
 
-    # Проверяем используемые шаблоны
+    # Check the templates used
     def test_users_pages_uses_correct_template_guest(self):
         """The URL in users uses the appropriate template."""
         templates_page_names = {
