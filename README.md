@@ -99,4 +99,4 @@ The application is responsible for the context processors:
 - custom page 500
 
 ## Authors
-- [Aleh Maslau](https://github.com/Oleg-2006)
+- [Aleh Maslau](https://github.com/Alehmas)
