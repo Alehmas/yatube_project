@@ -20,7 +20,7 @@ The project implements:
 ##  Run the project locally
 - Clone the repository
 ```
-git@github.com:Oleg-2006/yatube_project.git
+git@github.com:Alehmas/yatube_project.git
 ```
 - Move to a new directory
 ```
